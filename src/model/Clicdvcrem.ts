@@ -5,7 +5,7 @@ import { Local } from './Local';
 
 export type Clicdvcrem = {
     'activite_principale': ActivitePrincipaleEnum | null;
-    'activites_secondaire': Array<ActivitesSecondaireEnum> | null;
+    'activites_secondaire': Set<ActivitesSecondaireEnum> | null;
     'categorie': CategorieEnum | null;
     'groupement_etablissement': GroupementEtablissementEnum | null;
     'tableau_des_effectifs': Array<EffectifsNiveau> | null;
@@ -25,6 +25,7 @@ export type Clicdvcrem = {
     'plancher_bas_du_dernier_niveau': PlancherBasDuDernierNiveauEnum | null;
     'plancher_bas_du_dernier_niveau_accessible_au_public': PlancherBasDuDernierNiveauAccessibleAuPublicEnum | null;
     'voie_engin': boolean | null;
+    'nombre_voies_engins': number | null;
     'voie_echelle': boolean | null;
     'nombre_facades_accessibles': number | null;
     'informations_acces_facades': string | null;
@@ -48,7 +49,7 @@ export type Clicdvcrem = {
     'construction_structures_description': string | null;
     'construction_couverture_description': string | null;
     'construction_facades_description': string | null;
-    'type_cloisonnement': Array<TypeCloisonnementEnum> | null;
+    'type_cloisonnement': Set<TypeCloisonnementEnum> | null;
     'construction_distribution_interieure_informations_complementaires': string | null;
     'locaux': Array<Local> | null;
     'construction_conduits_et_gaines_description': string | null;
@@ -75,7 +76,7 @@ export type Clicdvcrem = {
     'electricite_eclairage_informations_complementaires': string | null;
     'puissance_chaufferie': PuissanceChaufferieEnum | null;
     'presence_gaz_chaufferie': boolean | null;
-    'type_de_chauffage': Array<TypeDeChauffageEnum> | null;
+    'type_de_chauffage': Set<TypeDeChauffageEnum> | null;
     'chauffage_ventilation_informations_complementaires': string | null;
     'puissance_cuisine': PuissanceCuisineEnum | null;
     'type_de_cuisine': TypeDeCuisineEnum | null;
@@ -118,8 +119,25 @@ export enum ActivitePrincipaleEnum {
     EF___BATEAUX_EN_STATIONNEMENT_SUR_LES_EAUX_INTERIEURES = 'EF - Bateaux en stationnement sur les eaux intérieures',
     EF___BATEAUX_STATIONNAIRES = 'EF - Bateaux stationnaires',
     EF___ETABLISSEMENTS_FLOTTANTS = 'EF - Etablissements flottants',
+    EP___MAISON_DARRET = 'EP - Maison d\'arrêt',
+    EP___MAISON_CENTRALE_ET_CENTRE_DE_DETENTION = 'EP - Maison centrale et centre de détention',
+    EP___CENTRE_PENITENTIAIRE = 'EP - Centre pénitentiaire',
+    EP___CENTRE_DE_SEMI_LIBERTE_ET_CENTRES_POUR_PEINES_AMENAGEES = 'EP - Centre de semi-liberté et centres pour peines aménagées',
+    EP___TABLISSEMENT_PENITENTIAIRE_POUR_MINEURS = 'EP - Établissement pénitentiaire pour mineurs',
+    EP___CENTRE_DE_RETENTION_ADMINISTRATIVE = 'EP - Centre de rétention administrative',
     GA___GARES = 'GA - Gares',
     GEEM___GRANDS_ETABLISSEMENTS_A_EXPLOITATION_MULTIPLE = 'GEEM - Grands établissements à exploitation multiple',
+    IGH___GHA__HABITATION = 'IGH - GHA (Habitation)',
+    IGH___GHO__HOTEL = 'IGH - GHO (Hôtel)',
+    IGH___GHR__ENSEIGNEMENT = 'IGH - GHR (Enseignement)',
+    IGH___GHS__DEPOT_DARCHIVES = 'IGH - GHS (Dépôt d\'archives)',
+    IGH___GHU__SANITAIRE = 'IGH - GHU (Sanitaire)',
+    IGH___GHW1__BUREAU = 'IGH - GHW1 (Bureau)',
+    IGH___GHW2__BUREAU = 'IGH - GHW2 (Bureau)',
+    IGH___GHZ__MIXTE = 'IGH - GHZ (Mixte)',
+    IGH___GHTC__TOUR_DE_CONTROLE = 'IGH - GHTC (Tour de contrôle)',
+    IGH___ITGH = 'IGH - ITGH',
+    IGH___IMH = 'IGH - IMH',
     J___ETABLISSEMENTS_DENSEIGNEMENT_AVEC_INTERNAT_POUR_JEUNES_HANDICAPES_OU_INADAPTES = 'J - Etablissements d\'enseignement avec internat pour jeunes handicapés ou inadaptés',
     J___ETABLISSEMENTS_DHEBERGEMENT_POUR_ADULTES_HANDICAPES = 'J - Etablissements d\'hébergement pour adultes handicapés',
     J___ETABLISSEMENTS_MEDICO_EDUCATIFS_AVEC_INTERNAT_POUR_JEUNES_HANDICAPES_OU_INADAPTES = 'J - Etablissements médico-éducatifs avec internat pour jeunes handicapés ou inadaptés',
@@ -225,8 +243,25 @@ export enum ActivitesSecondaireEnum {
     EF___BATEAUX_EN_STATIONNEMENT_SUR_LES_EAUX_INTERIEURES = 'EF - Bateaux en stationnement sur les eaux intérieures',
     EF___BATEAUX_STATIONNAIRES = 'EF - Bateaux stationnaires',
     EF___ETABLISSEMENTS_FLOTTANTS = 'EF - Etablissements flottants',
+    EP___MAISON_DARRET = 'EP - Maison d\'arrêt',
+    EP___MAISON_CENTRALE_ET_CENTRE_DE_DETENTION = 'EP - Maison centrale et centre de détention',
+    EP___CENTRE_PENITENTIAIRE = 'EP - Centre pénitentiaire',
+    EP___CENTRE_DE_SEMI_LIBERTE_ET_CENTRES_POUR_PEINES_AMENAGEES = 'EP - Centre de semi-liberté et centres pour peines aménagées',
+    EP___TABLISSEMENT_PENITENTIAIRE_POUR_MINEURS = 'EP - Établissement pénitentiaire pour mineurs',
+    EP___CENTRE_DE_RETENTION_ADMINISTRATIVE = 'EP - Centre de rétention administrative',
     GA___GARES = 'GA - Gares',
     GEEM___GRANDS_ETABLISSEMENTS_A_EXPLOITATION_MULTIPLE = 'GEEM - Grands établissements à exploitation multiple',
+    IGH___GHA__HABITATION = 'IGH - GHA (Habitation)',
+    IGH___GHO__HOTEL = 'IGH - GHO (Hôtel)',
+    IGH___GHR__ENSEIGNEMENT = 'IGH - GHR (Enseignement)',
+    IGH___GHS__DEPOT_DARCHIVES = 'IGH - GHS (Dépôt d\'archives)',
+    IGH___GHU__SANITAIRE = 'IGH - GHU (Sanitaire)',
+    IGH___GHW1__BUREAU = 'IGH - GHW1 (Bureau)',
+    IGH___GHW2__BUREAU = 'IGH - GHW2 (Bureau)',
+    IGH___GHZ__MIXTE = 'IGH - GHZ (Mixte)',
+    IGH___GHTC__TOUR_DE_CONTROLE = 'IGH - GHTC (Tour de contrôle)',
+    IGH___ITGH = 'IGH - ITGH',
+    IGH___IMH = 'IGH - IMH',
     J___ETABLISSEMENTS_DENSEIGNEMENT_AVEC_INTERNAT_POUR_JEUNES_HANDICAPES_OU_INADAPTES = 'J - Etablissements d\'enseignement avec internat pour jeunes handicapés ou inadaptés',
     J___ETABLISSEMENTS_DHEBERGEMENT_POUR_ADULTES_HANDICAPES = 'J - Etablissements d\'hébergement pour adultes handicapés',
     J___ETABLISSEMENTS_MEDICO_EDUCATIFS_AVEC_INTERNAT_POUR_JEUNES_HANDICAPES_OU_INADAPTES = 'J - Etablissements médico-éducatifs avec internat pour jeunes handicapés ou inadaptés',
@@ -453,19 +488,19 @@ export enum ServiceDeSecuriteIncendieEnum {
 }
 
 export enum TypeSsiEnum {
-    A = 'A',
-    B = 'B',
-    C = 'C',
+    E = 'E',
     D = 'D',
-    E = 'E'
+    C = 'C',
+    B = 'B',
+    A = 'A'
 }
 
 export enum TypeAlarmeEnum {
-    _1 = '1',
-    _2_A = '2A',
-    _2_B = '2B',
+    _4 = '4',
     _3 = '3',
-    _4 = '4'
+    _2_B = '2B',
+    _2_A = '2A',
+    _1 = '1'
 }
 
 export enum AutreSystemeAlerteEnum {

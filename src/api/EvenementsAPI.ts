@@ -22,7 +22,11 @@ export class EvenementsAPI extends Core {
         const pathVariable = { 'evenement_id': (new String(evenementId)).toString() };
         return this.request({
             method: 'DELETE',
-            endpoint: Utils.constructPath(pathVariable, '/evenements/{evenement_id}')
+            endpoint: Utils.constructPath(pathVariable, '/evenements/{evenement_id}'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -36,7 +40,11 @@ export class EvenementsAPI extends Core {
         const pathVariable = { 'evenement_id': (new String(evenementId)).toString() };
         return this.request({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/evenements/{evenement_id}')
+            endpoint: Utils.constructPath(pathVariable, '/evenements/{evenement_id}'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -45,7 +53,8 @@ export class EvenementsAPI extends Core {
      */
     paginateEvenements(
         period? : string,
-        type? : 'DEFAUT' | 'RECONNAISSANCE_OPERATIONNELLE_ANNUELLE' | 'VISITE_PERIODIQUE' | 'COMMISSION_SECURITE'
+        type? : 'DEFAUT' | 'RECONNAISSANCE_OPERATIONNELLE_ANNUELLE' | 'VISITE_PERIODIQUE' | 'COMMISSION_SECURITE',
+        subjectId? : string
     ) : Collection<Evenement>
     {
         const pathVariable = { };
@@ -54,8 +63,13 @@ export class EvenementsAPI extends Core {
             endpoint: Utils.constructPath(pathVariable, '/evenements'),
             params: Utils.payloadFilter({
                 'period': period === undefined ? undefined : (new String(period)).toString(), 
-                'type': type === undefined ? undefined : (new String(type)).toString()
-            })
+                'type': type === undefined ? undefined : (new String(type)).toString(), 
+                'subject_id': subjectId === undefined ? undefined : (new String(subjectId)).toString()
+            }),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -69,7 +83,11 @@ export class EvenementsAPI extends Core {
         const pathVariable = { 'evenement_id': (new String(evenementId)).toString() };
         return this.collect({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/evenements/{evenement_id}/utilisateurs')
+            endpoint: Utils.constructPath(pathVariable, '/evenements/{evenement_id}/utilisateurs'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -84,6 +102,10 @@ export class EvenementsAPI extends Core {
         return this.request({
             method: 'POST',
             endpoint: Utils.constructPath(pathVariable, '/evenements'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }],
             body: Utils.payloadFilter(params)
         });
     }

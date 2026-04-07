@@ -2,7 +2,7 @@ import axios, {
 	AxiosInstance,
 	AxiosResponse,
 	RawAxiosRequestHeaders
-} from "axios";
+, AxiosRequestConfig } from "axios";
 import axiosRetry from "axios-retry";
 import { MetariscConfig, OAuth2Options } from "./core";
 import { GrantResponse, OAuth2, RefreshResponse } from "./auth/oauth2";
@@ -10,19 +10,11 @@ import { setupCache } from "axios-cache-interceptor";
 import { Utils } from "./utils";
 import { SessionExpiredError } from "./error/SessionExpiredError";
 
-interface RequestConfig {
+export interface RequestConfig extends AxiosRequestConfig {
 	body?: any;
 	headers?: { [name: string]: string | string[] };
 	params?: { [param: string]: string | string[] };
 	endpoint?: string;
-	method?: string;
-	responseType?:
-		| "arraybuffer"
-		| "blob"
-		| "document"
-		| "json"
-		| "text"
-		| "stream";
 }
 
 export enum AuthMethod {
@@ -59,6 +51,25 @@ export class Client {
 			baseURL: config.metarisc_url ?? "https://api.metarisc.fr/",
 			headers: {
 				common: this.getDefaultHeaders()
+			},
+			paramsSerializer: {
+				serialize: (params) => {
+					const searchParams = new URLSearchParams();
+
+					Object.keys(params).forEach((key) => {
+						const value = params[key];
+						if (Array.isArray(value)) {
+							// Pour les tableaux, répéter le même nom de paramètre sans crochets
+							value.forEach((item) => {
+								searchParams.append(key, String(item));
+							});
+						} else if (value !== null && value !== undefined) {
+							searchParams.append(key, String(value));
+						}
+					});
+
+					return searchParams.toString();
+				}
 			}
 		});
 
@@ -150,14 +161,11 @@ export class Client {
 	 */
 	async request<T>(config: RequestConfig): Promise<AxiosResponse<T>> {
 		this.emit(EventEnum.request, config);
-		return this.axios.request<T>({
+		return this.axios.request<T>({ ...config, ...{
 			method: config.method || "GET",
 			url: config.endpoint || "/",
-			params: config.params,
-			data: config.body,
-			headers: config.headers,
-			responseType: config.responseType
-		}).then((response) => {
+			data: config.body
+		} }).then((response) => {
             this.emit(EventEnum.response, response);
             return response;
         });

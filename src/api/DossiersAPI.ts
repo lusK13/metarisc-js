@@ -5,6 +5,7 @@ import type { AxiosResponse } from "axios";
 import { Client } from "../client";
 import { Collection } from "../collection";
 import { Contact } from '../model/Contact';
+import { Derogation } from '../model/Derogation';
 import { Dossier } from '../model/Dossier';
 import { DossierAffectation } from '../model/DossierAffectation';
 import { FilRougeMessage } from '../model/FilRougeMessage';
@@ -32,7 +33,11 @@ export class DossiersAPI extends Core {
         const pathVariable = { 'dossier_id': (new String(dossierId)).toString() };
         return this.request({
             method: 'DELETE',
-            endpoint: Utils.constructPath(pathVariable, '/dossiers/{dossier_id}/archiver')
+            endpoint: Utils.constructPath(pathVariable, '/dossiers/{dossier_id}/archiver'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -46,7 +51,29 @@ export class DossiersAPI extends Core {
         const pathVariable = { 'dossier_id': (new String(dossierId)).toString() };
         return this.request({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/dossiers/{dossier_id}/affectations')
+            endpoint: Utils.constructPath(pathVariable, '/dossiers/{dossier_id}/affectations'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
+        });
+    }
+    
+    /**
+     * Récupération de la liste des dérogations associées à un dossier spécifique.
+     */
+    getDerogationsDossier(
+        dossierId: string
+    ) : Promise<AxiosResponse<Derogation>>
+    {
+        const pathVariable = { 'dossier_id': (new String(dossierId)).toString() };
+        return this.request({
+            method: 'GET',
+            endpoint: Utils.constructPath(pathVariable, '/dossiers/{dossier_id}/derogations'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -60,7 +87,29 @@ export class DossiersAPI extends Core {
         const pathVariable = { 'dossier_id': (new String(dossierId)).toString() };
         return this.request({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/dossiers/{dossier_id}')
+            endpoint: Utils.constructPath(pathVariable, '/dossiers/{dossier_id}'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                if (parsedData && parsedData.createur?.roles) {
+                    parsedData.createur.roles = new Set(parsedData.createur.roles);
+                }
+                if (parsedData && parsedData.modules) {
+                    parsedData.modules = new Set(parsedData.modules);
+                }
+                if (parsedData && parsedData.workflows_actifs) {
+                    parsedData.workflows_actifs = new Set(parsedData.workflows_actifs);
+                }
+                if (parsedData && parsedData.erp.descriptif_technique.analyse_risque?.activites_secondaire) {
+                    parsedData.erp.descriptif_technique.analyse_risque.activites_secondaire = new Set(parsedData.erp.descriptif_technique.analyse_risque.activites_secondaire);
+                }
+                if (parsedData && parsedData.erp.descriptif_technique.analyse_risque?.type_cloisonnement) {
+                    parsedData.erp.descriptif_technique.analyse_risque.type_cloisonnement = new Set(parsedData.erp.descriptif_technique.analyse_risque.type_cloisonnement);
+                }
+                if (parsedData && parsedData.erp.descriptif_technique.analyse_risque?.type_de_chauffage) {
+                    parsedData.erp.descriptif_technique.analyse_risque.type_de_chauffage = new Set(parsedData.erp.descriptif_technique.analyse_risque.type_de_chauffage);
+                }
+                return parsedData;
+            }]
         });
     }
     
@@ -74,7 +123,11 @@ export class DossiersAPI extends Core {
         const pathVariable = { 'dossier_id': (new String(dossierId)).toString() };
         return this.request({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/dossiers/{dossier_id}/essais')
+            endpoint: Utils.constructPath(pathVariable, '/dossiers/{dossier_id}/essais'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -103,7 +156,11 @@ export class DossiersAPI extends Core {
         const pathVariable = { 'dossier_id': (new String(dossierId)).toString() };
         return this.request({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/dossiers/{dossier_id}/permissions')
+            endpoint: Utils.constructPath(pathVariable, '/dossiers/{dossier_id}/permissions'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -117,7 +174,11 @@ export class DossiersAPI extends Core {
         const pathVariable = { 'dossier_id': (new String(dossierId)).toString() };
         return this.request({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/dossiers/{dossier_id}/rapport_etude/prescriptions')
+            endpoint: Utils.constructPath(pathVariable, '/dossiers/{dossier_id}/rapport_etude/prescriptions'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -131,7 +192,20 @@ export class DossiersAPI extends Core {
         const pathVariable = { 'dossier_id': (new String(dossierId)).toString() };
         return this.request({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/dossiers/{dossier_id}/rapport_etude')
+            endpoint: Utils.constructPath(pathVariable, '/dossiers/{dossier_id}/rapport_etude'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                if (parsedData && parsedData.analyse_risque?.activites_secondaire) {
+                    parsedData.analyse_risque.activites_secondaire = new Set(parsedData.analyse_risque.activites_secondaire);
+                }
+                if (parsedData && parsedData.analyse_risque?.type_cloisonnement) {
+                    parsedData.analyse_risque.type_cloisonnement = new Set(parsedData.analyse_risque.type_cloisonnement);
+                }
+                if (parsedData && parsedData.analyse_risque?.type_de_chauffage) {
+                    parsedData.analyse_risque.type_de_chauffage = new Set(parsedData.analyse_risque.type_de_chauffage);
+                }
+                return parsedData;
+            }]
         });
     }
     
@@ -145,7 +219,29 @@ export class DossiersAPI extends Core {
         const pathVariable = { 'dossier_id': (new String(dossierId)).toString() };
         return this.request({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/dossiers/{dossier_id}/rapport_visite')
+            endpoint: Utils.constructPath(pathVariable, '/dossiers/{dossier_id}/rapport_visite'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
+        });
+    }
+    
+    /**
+     * Récupération de la liste des tags d'un dossier.
+     */
+    paginateDossierTags(
+        dossierId: string
+    ) : Promise<AxiosResponse<{data: Tag[]}>>
+    {
+        const pathVariable = { 'dossier_id': (new String(dossierId)).toString() };
+        return this.request({
+            method: 'GET',
+            endpoint: Utils.constructPath(pathVariable, '/dossiers/{dossier_id}/tags'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -159,7 +255,11 @@ export class DossiersAPI extends Core {
         const pathVariable = { 'dossier_id': (new String(dossierId)).toString() };
         return this.collect({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/dossiers/{dossier_id}/contacts')
+            endpoint: Utils.constructPath(pathVariable, '/dossiers/{dossier_id}/contacts'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -173,7 +273,11 @@ export class DossiersAPI extends Core {
         const pathVariable = { 'dossier_id': (new String(dossierId)).toString() };
         return this.collect({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/dossiers/{dossier_id}/documents')
+            endpoint: Utils.constructPath(pathVariable, '/dossiers/{dossier_id}/documents'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -181,10 +285,11 @@ export class DossiersAPI extends Core {
      * Récupération de la liste des dossiers selon des critères de recherche.
      */
     paginateDossiers(
+        sort? : 'date_de_creation' | '-date_de_creation',
         objet? : string,
         erp? : string,
         pei? : string,
-        type? : string,
+        type? : string | Array<string>,
         workflowActif? : 'analyse_de_risque' | 'validation' | 'arrivee_sis' | 'arrivee_sis_prev' | 'arrivee_secretariat_commission' | 'consultation_sis' | 'passage_commission' | 'relecture' | 'visite' | 'arrivee_secretariat' | 'workflow' | 'reception_de_travaux_en_attente',
         affecte? : string,
         enveloppe? : string,
@@ -196,6 +301,7 @@ export class DossiersAPI extends Core {
             method: 'GET',
             endpoint: Utils.constructPath(pathVariable, '/dossiers'),
             params: Utils.payloadFilter({
+                'sort': sort === undefined ? undefined : (new String(sort)).toString(), 
                 'objet': objet === undefined ? undefined : (new String(objet)).toString(), 
                 'erp': erp === undefined ? undefined : (new String(erp)).toString(), 
                 'pei': pei === undefined ? undefined : (new String(pei)).toString(), 
@@ -204,7 +310,11 @@ export class DossiersAPI extends Core {
                 'affecte': affecte === undefined ? undefined : (new String(affecte)).toString(), 
                 'enveloppe': enveloppe === undefined ? undefined : (new String(enveloppe)).toString(), 
                 'numero_urba': numeroUrba === undefined ? undefined : (new String(numeroUrba)).toString()
-            })
+            }),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -218,21 +328,11 @@ export class DossiersAPI extends Core {
         const pathVariable = { 'dossier_id': (new String(dossierId)).toString() };
         return this.collect({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/dossiers/{dossier_id}/fil_rouge')
-        });
-    }
-    
-    /**
-     * Récupération de la liste des tags d'un dossier.
-     */
-    paginateDossierTags(
-        dossierId: string
-    ) : Collection<Tag>
-    {
-        const pathVariable = { 'dossier_id': (new String(dossierId)).toString() };
-        return this.collect({
-            method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/dossiers/{dossier_id}/tags')
+            endpoint: Utils.constructPath(pathVariable, '/dossiers/{dossier_id}/fil_rouge'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -246,7 +346,11 @@ export class DossiersAPI extends Core {
         const pathVariable = { 'dossier_id': (new String(dossierId)).toString() };
         return this.collect({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/dossiers/{dossier_id}/workflows')
+            endpoint: Utils.constructPath(pathVariable, '/dossiers/{dossier_id}/workflows'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -262,6 +366,13 @@ export class DossiersAPI extends Core {
         return this.request({
             method: 'POST',
             endpoint: Utils.constructPath(pathVariable, '/dossiers/{dossier_id}/affectations'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                if (parsedData && parsedData.utilisateur?.roles) {
+                    parsedData.utilisateur.roles = new Set(parsedData.utilisateur.roles);
+                }
+                return parsedData;
+            }],
             body: Utils.payloadFilter(params)
         });
     }
@@ -278,6 +389,30 @@ export class DossiersAPI extends Core {
         return this.request({
             method: 'POST',
             endpoint: Utils.constructPath(pathVariable, '/dossiers/{dossier_id}/contacts'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }],
+            body: Utils.payloadFilter(params)
+        });
+    }
+    
+    /**
+     * Mise a jour d'une dérogation dans un dossier.
+     */
+    postDerogationsDossier(
+        dossierId: string,
+        params : any
+    ) : Promise<AxiosResponse<Derogation>>
+    {
+        const pathVariable = { 'dossier_id': (new String(dossierId)).toString() };
+        return this.request({
+            method: 'POST',
+            endpoint: Utils.constructPath(pathVariable, '/dossiers/{dossier_id}/derogations'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }],
             body: Utils.payloadFilter(params)
         });
     }
@@ -294,6 +429,10 @@ export class DossiersAPI extends Core {
         return this.request({
             method: 'POST',
             endpoint: Utils.constructPath(pathVariable, '/dossiers/{dossier_id}/documents'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }],
             body: Utils.payloadFilter(params)
         });
     }
@@ -310,6 +449,28 @@ export class DossiersAPI extends Core {
         return this.request({
             method: 'POST',
             endpoint: Utils.constructPath(pathVariable, '/dossiers/{dossier_id}'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                if (parsedData && parsedData.createur?.roles) {
+                    parsedData.createur.roles = new Set(parsedData.createur.roles);
+                }
+                if (parsedData && parsedData.modules) {
+                    parsedData.modules = new Set(parsedData.modules);
+                }
+                if (parsedData && parsedData.workflows_actifs) {
+                    parsedData.workflows_actifs = new Set(parsedData.workflows_actifs);
+                }
+                if (parsedData && parsedData.erp.descriptif_technique.analyse_risque?.activites_secondaire) {
+                    parsedData.erp.descriptif_technique.analyse_risque.activites_secondaire = new Set(parsedData.erp.descriptif_technique.analyse_risque.activites_secondaire);
+                }
+                if (parsedData && parsedData.erp.descriptif_technique.analyse_risque?.type_cloisonnement) {
+                    parsedData.erp.descriptif_technique.analyse_risque.type_cloisonnement = new Set(parsedData.erp.descriptif_technique.analyse_risque.type_cloisonnement);
+                }
+                if (parsedData && parsedData.erp.descriptif_technique.analyse_risque?.type_de_chauffage) {
+                    parsedData.erp.descriptif_technique.analyse_risque.type_de_chauffage = new Set(parsedData.erp.descriptif_technique.analyse_risque.type_de_chauffage);
+                }
+                return parsedData;
+            }],
             body: Utils.payloadFilter(params)
         });
     }
@@ -326,6 +487,13 @@ export class DossiersAPI extends Core {
         return this.request({
             method: 'POST',
             endpoint: Utils.constructPath(pathVariable, '/dossiers/{dossier_id}/fil_rouge'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                if (parsedData && parsedData.auteur?.roles) {
+                    parsedData.auteur.roles = new Set(parsedData.auteur.roles);
+                }
+                return parsedData;
+            }],
             body: Utils.payloadFilter(params)
         });
     }
@@ -342,6 +510,10 @@ export class DossiersAPI extends Core {
         return this.request({
             method: 'POST',
             endpoint: Utils.constructPath(pathVariable, '/dossiers/{dossier_id}/rapport_etude/prescriptions'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }],
             body: Utils.payloadFilter(params)
         });
     }
@@ -358,6 +530,19 @@ export class DossiersAPI extends Core {
         return this.request({
             method: 'POST',
             endpoint: Utils.constructPath(pathVariable, '/dossiers/{dossier_id}/rapport_etude'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                if (parsedData && parsedData.analyse_risque?.activites_secondaire) {
+                    parsedData.analyse_risque.activites_secondaire = new Set(parsedData.analyse_risque.activites_secondaire);
+                }
+                if (parsedData && parsedData.analyse_risque?.type_cloisonnement) {
+                    parsedData.analyse_risque.type_cloisonnement = new Set(parsedData.analyse_risque.type_cloisonnement);
+                }
+                if (parsedData && parsedData.analyse_risque?.type_de_chauffage) {
+                    parsedData.analyse_risque.type_de_chauffage = new Set(parsedData.analyse_risque.type_de_chauffage);
+                }
+                return parsedData;
+            }],
             body: Utils.payloadFilter(params)
         });
     }
@@ -374,6 +559,10 @@ export class DossiersAPI extends Core {
         return this.request({
             method: 'POST',
             endpoint: Utils.constructPath(pathVariable, '/dossiers/{dossier_id}/rapport_visite'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }],
             body: Utils.payloadFilter(params)
         });
     }
@@ -390,6 +579,30 @@ export class DossiersAPI extends Core {
         return this.request({
             method: 'POST',
             endpoint: Utils.constructPath(pathVariable, '/dossiers/{dossier_id}/rapport_etude/prescriptions/reorganiser'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }],
+            body: Utils.payloadFilter(params)
+        });
+    }
+    
+    /**
+     * Permet de remplacer les tags d'un dossier existant par les valeurs transmis. Si un tableau vide est envoyé, les tags seront réinitialisés.
+     */
+    postTagsDossier(
+        dossierId: string,
+        params : any
+    ) : Promise<AxiosResponse<{data: Tag[]}>>
+    {
+        const pathVariable = { 'dossier_id': (new String(dossierId)).toString() };
+        return this.request({
+            method: 'POST',
+            endpoint: Utils.constructPath(pathVariable, '/dossiers/{dossier_id}/tags'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }],
             body: Utils.payloadFilter(params)
         });
     }
@@ -404,7 +617,11 @@ export class DossiersAPI extends Core {
         const pathVariable = { 'dossier_id': (new String(dossierId)).toString() };
         return this.request({
             method: 'PUT',
-            endpoint: Utils.constructPath(pathVariable, '/dossiers/{dossier_id}/archiver')
+            endpoint: Utils.constructPath(pathVariable, '/dossiers/{dossier_id}/archiver'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -420,6 +637,10 @@ export class DossiersAPI extends Core {
         return this.request({
             method: 'PUT',
             endpoint: Utils.constructPath(pathVariable, '/dossiers/{dossier_id}/essais'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }],
             body: Utils.payloadFilter(params)
         });
     }

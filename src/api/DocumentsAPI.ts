@@ -21,7 +21,11 @@ export class DocumentsAPI extends Core {
         const pathVariable = { 'document_id': (new String(documentId)).toString() };
         return this.request({
             method: 'DELETE',
-            endpoint: Utils.constructPath(pathVariable, '/documents/{document_id}')
+            endpoint: Utils.constructPath(pathVariable, '/documents/{document_id}'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -35,7 +39,11 @@ export class DocumentsAPI extends Core {
         const pathVariable = { 'document_id': (new String(documentId)).toString() };
         return this.request({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/documents/{document_id}')
+            endpoint: Utils.constructPath(pathVariable, '/documents/{document_id}'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -48,7 +56,11 @@ export class DocumentsAPI extends Core {
         const pathVariable = { };
         return this.collect({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/documents')
+            endpoint: Utils.constructPath(pathVariable, '/documents'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -64,6 +76,10 @@ export class DocumentsAPI extends Core {
         return this.request({
             method: 'POST',
             endpoint: Utils.constructPath(pathVariable, '/documents/{document_id}'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }],
             body: Utils.payloadFilter(params)
         });
     }

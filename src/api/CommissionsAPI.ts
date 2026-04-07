@@ -24,7 +24,11 @@ export class CommissionsAPI extends Core {
         const pathVariable = { 'commission_id': (new String(commissionId)).toString() };
         return this.request({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/commissions/{commission_id}')
+            endpoint: Utils.constructPath(pathVariable, '/commissions/{commission_id}'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -38,7 +42,11 @@ export class CommissionsAPI extends Core {
         const pathVariable = { 'commission_id': (new String(commissionId)).toString() };
         return this.request({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/commissions/{commission_id}/preferences')
+            endpoint: Utils.constructPath(pathVariable, '/commissions/{commission_id}/preferences'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -57,7 +65,11 @@ export class CommissionsAPI extends Core {
             params: Utils.payloadFilter({
                 'libelle': libelle === undefined ? undefined : (new String(libelle)).toString(), 
                 'type': type === undefined ? undefined : (new String(type)).toString()
-            })
+            }),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -66,7 +78,8 @@ export class CommissionsAPI extends Core {
      */
     paginateCommissionDates(
         commissionId: string,
-        fromDate? : Date
+        fromDate? : Date,
+        type? : 'salle' | 'visite_reception_travaux_en_groupe_de_visite' | 'visite_reception_avant_ouverture_en_groupe_de_visite' | 'visite_periodique_en_groupe_de_visite' | 'visite_inopinee_en_groupe_de_visite' | 'visite_controle_en_groupe_de_visite' | 'visite_chantier_en_groupe_de_visite' | 'visite_conseil_en_groupe_de_visite' | 'visite_reception_travaux_en_pleniere' | 'visite_reception_avant_ouverture_en_pleniere' | 'visite_periodique_en_pleniere' | 'visite_inopinee_en_pleniere' | 'visite_controle_en_pleniere' | 'visite_chantier_en_pleniere' | 'visite_conseil_en_pleniere'
     ) : Collection<PassageCommission>
     {
         const pathVariable = { 'commission_id': (new String(commissionId)).toString() };
@@ -74,8 +87,13 @@ export class CommissionsAPI extends Core {
             method: 'GET',
             endpoint: Utils.constructPath(pathVariable, '/commissions/{commission_id}/dates'),
             params: Utils.payloadFilter({
-                'from_date': fromDate === undefined ? undefined : (new String(fromDate)).toString()
-            })
+                'from_date': fromDate === undefined ? undefined : Utils.formatDate(fromDate), 
+                'type': type === undefined ? undefined : (new String(type)).toString()
+            }),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -93,7 +111,52 @@ export class CommissionsAPI extends Core {
             endpoint: Utils.constructPath(pathVariable, '/commissions/{commission_id}/membres'),
             params: Utils.payloadFilter({
                 'commission': commission === undefined ? undefined : (new String(commission)).toString()
-            })
+            }),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
+        });
+    }
+    
+    /**
+     * Modification d'une commission existant en définissant les valeurs des paramètres transmis. Tous les paramètres non fournis resteront inchangés.
+     */
+    patchCommission(
+        commissionId: string,
+        params : any
+    ) : Promise<AxiosResponse<Commission>>
+    {
+        const pathVariable = { 'commission_id': (new String(commissionId)).toString() };
+        return this.request({
+            method: 'PATCH',
+            endpoint: Utils.constructPath(pathVariable, '/commissions/{commission_id}'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }],
+            body: Utils.payloadFilter(params)
+        });
+    }
+    
+    /**
+     * Modification d'un passage en commission existant en définissant les valeurs des paramètres transmis. Tous les paramètres non fournis resteront inchangés.
+     */
+    patchPassageDatesCommission(
+        commissionId: string,
+        passageId: string,
+        params : any
+    ) : Promise<AxiosResponse<PassageCommission>>
+    {
+        const pathVariable = { 'commission_id': (new String(commissionId)).toString(), 'passage_id': (new String(passageId)).toString() };
+        return this.request({
+            method: 'PATCH',
+            endpoint: Utils.constructPath(pathVariable, '/commissions/{commission_id}/dates/{passage_id}'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }],
+            body: Utils.payloadFilter(params)
         });
     }
     
@@ -108,6 +171,10 @@ export class CommissionsAPI extends Core {
         return this.request({
             method: 'POST',
             endpoint: Utils.constructPath(pathVariable, '/commissions'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }],
             body: Utils.payloadFilter(params)
         });
     }
@@ -124,6 +191,10 @@ export class CommissionsAPI extends Core {
         return this.request({
             method: 'POST',
             endpoint: Utils.constructPath(pathVariable, '/commissions/{commission_id}/dates'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }],
             body: Utils.payloadFilter(params)
         });
     }
@@ -140,6 +211,10 @@ export class CommissionsAPI extends Core {
         return this.request({
             method: 'POST',
             endpoint: Utils.constructPath(pathVariable, '/commissions/{commission_id}/membres'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }],
             body: Utils.payloadFilter(params)
         });
     }
@@ -156,6 +231,10 @@ export class CommissionsAPI extends Core {
         return this.request({
             method: 'POST',
             endpoint: Utils.constructPath(pathVariable, '/commissions/{commission_id}/preferences'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }],
             body: Utils.payloadFilter(params)
         });
     }

@@ -10,6 +10,8 @@ export type DocumentTechnique = {
 };
 
 export enum TypeEnum {
+    CERFA = 'CERFA',
+    COURRIER_DE_LA_MAIRIE = 'courrier_de_la_mairie',
     NOTICE_DESCRIPTIVE = 'notice_descriptive',
     PLAN = 'plan',
     CERTIFICAT_DE_VERIFICATION = 'certificat_de_verification',

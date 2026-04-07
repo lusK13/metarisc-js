@@ -4,10 +4,11 @@ import { FeedMessageBase } from './FeedMessageBase';
 
 export type FeedMessageTexte = FeedMessageBase & { 
 
+    'type': TypeEnum;
+
     'texte': string;
 };
 
 export enum TypeEnum {
-    TEXTE = 'texte',
-    LISTE_PEI = 'liste_pei'
+    TEXTE = 'texte'
 }

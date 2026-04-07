@@ -11,7 +11,7 @@ import { MainCourante } from '../model/MainCourante';
 import { PieceJointe } from '../model/PieceJointe';
 import { PermissionErp } from '../model/PermissionErp';
 import { ReferenceExterieure } from '../model/ReferenceExterieure';
-import { DescriptifTechniqueERP } from '../model/DescriptifTechniqueERP';
+import { DescriptifTechniqueERPBase } from '../model/DescriptifTechniqueERPBase';
 import { Prescription } from '../model/Prescription';
 import { PrescriptionSupportReglementaire } from '../model/PrescriptionSupportReglementaire';
 
@@ -30,7 +30,20 @@ export class ERPAPI extends Core {
         const pathVariable = { 'erp_id': (new String(erpId)).toString() };
         return this.request({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/erp/{erp_id}')
+            endpoint: Utils.constructPath(pathVariable, '/erp/{erp_id}'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                if (parsedData && parsedData.descriptif_technique.analyse_risque?.activites_secondaire) {
+                    parsedData.descriptif_technique.analyse_risque.activites_secondaire = new Set(parsedData.descriptif_technique.analyse_risque.activites_secondaire);
+                }
+                if (parsedData && parsedData.descriptif_technique.analyse_risque?.type_cloisonnement) {
+                    parsedData.descriptif_technique.analyse_risque.type_cloisonnement = new Set(parsedData.descriptif_technique.analyse_risque.type_cloisonnement);
+                }
+                if (parsedData && parsedData.descriptif_technique.analyse_risque?.type_de_chauffage) {
+                    parsedData.descriptif_technique.analyse_risque.type_de_chauffage = new Set(parsedData.descriptif_technique.analyse_risque.type_de_chauffage);
+                }
+                return parsedData;
+            }]
         });
     }
     
@@ -44,7 +57,11 @@ export class ERPAPI extends Core {
         const pathVariable = { 'erp_id': (new String(erpId)).toString() };
         return this.request({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/erp/{erp_id}/permissions')
+            endpoint: Utils.constructPath(pathVariable, '/erp/{erp_id}/permissions'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -58,7 +75,11 @@ export class ERPAPI extends Core {
         const pathVariable = { 'erp_id': (new String(erpId)).toString() };
         return this.request({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/erp/{erp_id}/references_exterieures')
+            endpoint: Utils.constructPath(pathVariable, '/erp/{erp_id}/references_exterieures'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -72,7 +93,11 @@ export class ERPAPI extends Core {
         const pathVariable = { 'erp_id': (new String(erpId)).toString() };
         return this.collect({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/erp/{erp_id}/contacts')
+            endpoint: Utils.constructPath(pathVariable, '/erp/{erp_id}/contacts'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -86,17 +111,26 @@ export class ERPAPI extends Core {
         const pathVariable = { 'erp_id': (new String(erpId)).toString() };
         return this.collect({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/erp/{erp_id}/documents')
+            endpoint: Utils.constructPath(pathVariable, '/erp/{erp_id}/documents'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
     /**
-     * Récupération de la liste des dossiers.
+     * Récupération de la liste des dossiers. Cet endpoint partage certains paramètres de filtrage de /dossiers.
      */
     paginateErpDossiers(
         erpId: string,
-        type? : 'erp:autorisation_de_travaux' | 'erp:permis_de_construire' | 'erp:levee_de_prescriptions' | 'erp:changement_de_dus' | 'erp:salon_type_t' | 'erp:utilisation_exceptionnelle_de_locaux' | 'erp:demande_d_implantation_cts_inferieur_6_mois' | 'erp:demande_d_implantation_cts_superieur_6_mois' | 'erp:derogation' | 'erp:etude_cahier_des_charges_type_t' | 'erp:levee_de_reserve' | 'erp:echeancier_de_travaux' | 'erp:cahier_des_charges_ssi' | 'erp:etude_suite_a_un_avis_differe' | 'erp:visite_periodique' | 'erp:visite_reception' | 'erp:visite_avant_ouverture' | 'erp:visite_controle' | 'erp:visite_inopinee' | 'erp:visite_chantier' | 'erp:demande_avis' | 'erp:demande_reclassement' | 'erp:suivi_avis_defavorable' | 'erp:levee_avis_defavorable' | 'erp:dossier_ge_2' | 'erp:schema_general_organisation_securite' | 'erp:etude_ingenierie' | 'erp:manifestation_temporaire',
-        sort? : 'asc' | 'desc'
+        sort? : 'date_de_creation' | '-date_de_creation',
+        objet? : string,
+        type? : string | Array<string>,
+        workflowActif? : 'analyse_de_risque' | 'validation' | 'arrivee_sis' | 'arrivee_sis_prev' | 'arrivee_secretariat_commission' | 'consultation_sis' | 'passage_commission' | 'relecture' | 'visite' | 'arrivee_secretariat' | 'workflow' | 'reception_de_travaux_en_attente',
+        affecte? : string,
+        enveloppe? : string,
+        numeroUrba? : string
     ) : Collection<Dossier>
     {
         const pathVariable = { 'erp_id': (new String(erpId)).toString() };
@@ -104,9 +138,18 @@ export class ERPAPI extends Core {
             method: 'GET',
             endpoint: Utils.constructPath(pathVariable, '/erp/{erp_id}/dossiers'),
             params: Utils.payloadFilter({
+                'sort': sort === undefined ? undefined : (new String(sort)).toString(), 
+                'objet': objet === undefined ? undefined : (new String(objet)).toString(), 
                 'type': type === undefined ? undefined : (new String(type)).toString(), 
-                'sort': sort === undefined ? undefined : (new String(sort)).toString()
-            })
+                'workflow_actif': workflowActif === undefined ? undefined : (new String(workflowActif)).toString(), 
+                'affecte': affecte === undefined ? undefined : (new String(affecte)).toString(), 
+                'enveloppe': enveloppe === undefined ? undefined : (new String(enveloppe)).toString(), 
+                'numero_urba': numeroUrba === undefined ? undefined : (new String(numeroUrba)).toString()
+            }),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -119,13 +162,15 @@ export class ERPAPI extends Core {
         geojson? : string,
         referencesExterieures? : string | Array<string>,
         presenceLocauxSommeil? : boolean,
-        typeActivite? : 'CTS - Châpiteaux' | 'CTS - Structures' | 'CTS - Tentes' | 'EF - Bateaux en stationnement sur les eaux intérieures' | 'EF - Bateaux stationnaires' | 'EF - Etablissements flottants' | 'GA - Gares' | 'GEEM - Grands établissements à exploitation multiple' | 'J - Etablissements d\'enseignement avec internat pour jeunes handicapés ou inadaptés' | 'J - Etablissements d\'hébergement pour adultes handicapés' | 'J - Etablissements médico-éducatifs avec internat pour jeunes handicapés ou inadaptés' | 'J - Structures d\'accueil pour personnes âgées' | 'J - Structures d\'accueil pour personnes handicapées' | 'L - Cabarets' | 'L - Salles d\'audition' | 'L - Salle de conférences' | 'L - Salles de pari' | 'L - Salles de projection' | 'L - Salles de quartier (ou assimilée)' | 'L - Salles de réunions' | 'L - Salles de spectacles' | 'L - Salles multimédia' | 'L - Salles polyvalentes à dominante sportive, dont la superficie unitaire est supérieure ou égale à 1 200 m2' | 'L - Salles polyvalentes non visée par le Type X (salle polyvalente qui n\'a pas une destination unique)' | 'L - Salles réservées aux associations' | 'M - Aires de vente' | 'M - Centres commerciaux' | 'M - Locaux de vente' | 'M - Magasin de vente' | 'N - Bars' | 'N - Brasseries' | 'N - Cafétaria' | 'N - Cafés' | 'N - Cantines' | 'N - Débits de boissons' | 'N - Restaurants' | 'O - Hôtels' | 'O - Pensions de famille' | 'OA - Hôtels-restaurants d\'altitude' | 'P - Salle de bals' | 'P - Dancing / discothèque' | 'P - Salles de jeux' | 'PA - Arènes' | 'PA - Hippodromes' | 'PA - Piscines' | 'PA - Pistes de patinage' | 'PA - Stades' | 'PA - Terrains de sport' | 'PA - Parc d\'attraction' | 'PE 2_2 - Locaux à usage collectif d\'une surface unitaire supérieure à 50 mètres carrés des logements-foyers et de l\'habitat de loisirs à gestion collective' | 'PE 2_2 - Bâtiments ou locaux à usage d\'hébergement qui ne relèvent d\'aucun type défini à l\'article GN 1 et qui permettent d\'accueillir plus de 15 et moins de 100 personnes n\'y élisant pas domicile' | 'PE 2_2 - Hébergement de mineurs en dehors de leurs familles, le seuil de l\'effectif est fixé à 7 mineurs' | 'PE 2_2 - Maisons d\'assistants maternels (MAM) dont les locaux accessibles au public sont strictement limités à un seul étage sur rez-de-chaussée et dont l\'effectif ne dépasse pas 16 enfants' | 'PS - Parcs de stationnement couverts' | 'PS - Parc de stationnement mixte' | 'PS - Parc de stationnement largement ventilé' | 'PS - Parc de stationnement à rangement automatisé' | 'R - Auberges de jeunesse (comprenant au moins un local collectif à sommeil)' | 'R - Auto-écoles' | 'R - Centres aérés' | 'R - Centres de loisirs (sans hébergement)' | 'R - Centres de vacances' | 'R - Colonies de vacances' | 'R - Crèches' | 'R - Ecoles maternelles' | 'R - Etablissements d\'enseignement' | 'R - Etablissements de formation' | 'R - Haltes-garderies' | 'R - Internats des établissements de l\'enseignement primaire et secondaire' | 'R - Jardins d\'enfant' | 'R - Lycee public' | 'R - Collège public' | 'R - Lycee privé' | 'R - Collège privé' | 'R - École élémentaire' | 'REF - Refuges de montagne' | 'S - Bibliothèques' | 'S - Centres de documentation et de consultation d\'archives' | 'SG - Structures gonflables' | 'T - Etablissements à vocation commerciale destinés à des expositions' | 'T - Foires-expositions' | 'T - Salles d\'expositions à caractère permanent n\'ayant pas une vocation de foire ou de salon' | 'T - Salles d\'expositions à caractère permanent de véhicules automobiles, bateaux, machines et autres volumineux biens d\'équipements assimilables' | 'T - Salons à caractère temporaire' | 'U - Etablissements de cure thermale ou de thalassothérapie' | 'U - Etablissements de santé publics ou privés dispensant des soins de courte durée en médecine, chirurgie, obstétrique' | 'U - Etablissements de santé publics ou privés dispensant des soins de psychiatrie, de suite ou de réadaptation, des soins de longue durée, à des personnes n\'ayant pas leur autonomie de vie dont l\'état nécessite une surveillance médicale constante' | 'U - Pouponnières (enfants de moins de 3 ans)' | 'V - Eglises' | 'V - Mosquées' | 'V - Synagogues' | 'V - Temples' | 'W - Administrations' | 'W - Banques' | 'W - Bureaux' | 'X - Manèges' | 'X - Patinoires' | 'X - Piscines couvertes, transformables et mixtes' | 'X - Salles d\'éducation physique et sportive' | 'X - Salles omnisports' | 'X - Salles polyvalentes à dominante sportive, dont l\'aire d\'activité est inférieure à 1200 m² et la hauteur sous plafond supérieure ou égale à 6,50 mètres' | 'X - Salles sportives spécialisées' | 'Y - Musées' | 'Y - Salles destinées à recevoir des expositions à vocation culturelle, scientifique, technique, artistique, etc. ayant un caractère temporaire',
+        typeActivite? : string | Array<string>,
         avisExploitation? : 'favorable' | 'defavorable',
         aVisiterEn? : string,
         siteGeographique? : string,
         commissionConcernee? : string,
         categorie? : 1 | 2 | 3 | 4 | 5,
-        erpRattacheA? : string
+        erpRattacheA? : string,
+        titulaires? : string,
+        genre? : 'cellule' | 'erp'
     ) : Collection<ERP>
     {
         const pathVariable = { };
@@ -144,8 +189,14 @@ export class ERPAPI extends Core {
                 'site_geographique': siteGeographique === undefined ? undefined : (new String(siteGeographique)).toString(), 
                 'commission_concernee': commissionConcernee === undefined ? undefined : (new String(commissionConcernee)).toString(), 
                 'categorie': categorie === undefined ? undefined : (new String(categorie)).toString(), 
-                'erp_rattache_a': erpRattacheA === undefined ? undefined : (new String(erpRattacheA)).toString()
-            })
+                'erp_rattache_a': erpRattacheA === undefined ? undefined : (new String(erpRattacheA)).toString(), 
+                'titulaires': titulaires === undefined ? undefined : (new String(titulaires)).toString(), 
+                'genre': genre === undefined ? undefined : (new String(genre)).toString()
+            }),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -154,12 +205,16 @@ export class ERPAPI extends Core {
      */
     paginateErpHistorique(
         erpId: string
-    ) : Collection<DescriptifTechniqueERP>
+    ) : Collection<DescriptifTechniqueERPBase>
     {
         const pathVariable = { 'erp_id': (new String(erpId)).toString() };
         return this.collect({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/erp/{erp_id}/historique')
+            endpoint: Utils.constructPath(pathVariable, '/erp/{erp_id}/historique'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -177,7 +232,11 @@ export class ERPAPI extends Core {
             endpoint: Utils.constructPath(pathVariable, '/erp/{erp_id}/mains_courantes'),
             params: Utils.payloadFilter({
                 'sort': sort === undefined ? undefined : (new String(sort)).toString()
-            })
+            }),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -191,7 +250,11 @@ export class ERPAPI extends Core {
         const pathVariable = { 'erp_id': (new String(erpId)).toString() };
         return this.collect({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/erp/{erp_id}/prescriptions')
+            endpoint: Utils.constructPath(pathVariable, '/erp/{erp_id}/prescriptions'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -205,7 +268,11 @@ export class ERPAPI extends Core {
         const pathVariable = { 'erp_id': (new String(erpId)).toString() };
         return this.collect({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/erp/{erp_id}/textes_applicables')
+            endpoint: Utils.constructPath(pathVariable, '/erp/{erp_id}/textes_applicables'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -221,6 +288,10 @@ export class ERPAPI extends Core {
         return this.request({
             method: 'PATCH',
             endpoint: Utils.constructPath(pathVariable, '/erp/{erp_id}/references_exterieures'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }],
             body: Utils.payloadFilter(params)
         });
     }
@@ -237,6 +308,10 @@ export class ERPAPI extends Core {
         return this.request({
             method: 'POST',
             endpoint: Utils.constructPath(pathVariable, '/erp/{erp_id}/contacts'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }],
             body: Utils.payloadFilter(params)
         });
     }
@@ -253,6 +328,10 @@ export class ERPAPI extends Core {
         return this.request({
             method: 'POST',
             endpoint: Utils.constructPath(pathVariable, '/erp/{erp_id}/documents'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }],
             body: Utils.payloadFilter(params)
         });
     }
@@ -269,6 +348,28 @@ export class ERPAPI extends Core {
         return this.request({
             method: 'POST',
             endpoint: Utils.constructPath(pathVariable, '/erp/{erp_id}/dossiers'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                if (parsedData && parsedData.createur?.roles) {
+                    parsedData.createur.roles = new Set(parsedData.createur.roles);
+                }
+                if (parsedData && parsedData.modules) {
+                    parsedData.modules = new Set(parsedData.modules);
+                }
+                if (parsedData && parsedData.workflows_actifs) {
+                    parsedData.workflows_actifs = new Set(parsedData.workflows_actifs);
+                }
+                if (parsedData && parsedData.erp.descriptif_technique.analyse_risque?.activites_secondaire) {
+                    parsedData.erp.descriptif_technique.analyse_risque.activites_secondaire = new Set(parsedData.erp.descriptif_technique.analyse_risque.activites_secondaire);
+                }
+                if (parsedData && parsedData.erp.descriptif_technique.analyse_risque?.type_cloisonnement) {
+                    parsedData.erp.descriptif_technique.analyse_risque.type_cloisonnement = new Set(parsedData.erp.descriptif_technique.analyse_risque.type_cloisonnement);
+                }
+                if (parsedData && parsedData.erp.descriptif_technique.analyse_risque?.type_de_chauffage) {
+                    parsedData.erp.descriptif_technique.analyse_risque.type_de_chauffage = new Set(parsedData.erp.descriptif_technique.analyse_risque.type_de_chauffage);
+                }
+                return parsedData;
+            }],
             body: Utils.payloadFilter(params)
         });
     }
@@ -284,6 +385,19 @@ export class ERPAPI extends Core {
         return this.request({
             method: 'POST',
             endpoint: Utils.constructPath(pathVariable, '/erp'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                if (parsedData && parsedData.descriptif_technique.analyse_risque?.activites_secondaire) {
+                    parsedData.descriptif_technique.analyse_risque.activites_secondaire = new Set(parsedData.descriptif_technique.analyse_risque.activites_secondaire);
+                }
+                if (parsedData && parsedData.descriptif_technique.analyse_risque?.type_cloisonnement) {
+                    parsedData.descriptif_technique.analyse_risque.type_cloisonnement = new Set(parsedData.descriptif_technique.analyse_risque.type_cloisonnement);
+                }
+                if (parsedData && parsedData.descriptif_technique.analyse_risque?.type_de_chauffage) {
+                    parsedData.descriptif_technique.analyse_risque.type_de_chauffage = new Set(parsedData.descriptif_technique.analyse_risque.type_de_chauffage);
+                }
+                return parsedData;
+            }],
             body: Utils.payloadFilter(params)
         });
     }
@@ -300,6 +414,19 @@ export class ERPAPI extends Core {
         return this.request({
             method: 'POST',
             endpoint: Utils.constructPath(pathVariable, '/erp/{erp_id}'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                if (parsedData && parsedData.descriptif_technique.analyse_risque?.activites_secondaire) {
+                    parsedData.descriptif_technique.analyse_risque.activites_secondaire = new Set(parsedData.descriptif_technique.analyse_risque.activites_secondaire);
+                }
+                if (parsedData && parsedData.descriptif_technique.analyse_risque?.type_cloisonnement) {
+                    parsedData.descriptif_technique.analyse_risque.type_cloisonnement = new Set(parsedData.descriptif_technique.analyse_risque.type_cloisonnement);
+                }
+                if (parsedData && parsedData.descriptif_technique.analyse_risque?.type_de_chauffage) {
+                    parsedData.descriptif_technique.analyse_risque.type_de_chauffage = new Set(parsedData.descriptif_technique.analyse_risque.type_de_chauffage);
+                }
+                return parsedData;
+            }],
             body: Utils.payloadFilter(params)
         });
     }
@@ -316,6 +443,10 @@ export class ERPAPI extends Core {
         return this.request({
             method: 'POST',
             endpoint: Utils.constructPath(pathVariable, '/erp/{erp_id}/mains_courantes'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }],
             body: Utils.payloadFilter(params)
         });
     }

@@ -7,6 +7,8 @@ export type Commission = {
     'libelle': string;
     'presidence': Organisation;
     'secretariat': Organisation;
+    'couleur'?: string | null;
+    'organisation_id': string;
 };
 
 export enum TypeEnum {

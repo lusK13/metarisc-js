@@ -10,6 +10,7 @@ export type RapportVisite = {
     'facteur_dangerosite': number | null;
     'documents_techniques': Array<DocumentTechnique>;
     'essais': Array<Essai>;
+    'descriptif_dossier': string | null;
 };
 
 export enum PropositionAvisEnum {

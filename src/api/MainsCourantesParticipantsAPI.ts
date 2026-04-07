@@ -19,7 +19,11 @@ export class MainsCourantesParticipantsAPI extends Core {
         const pathVariable = { 'participant_id': (new String(participantId)).toString() };
         return this.request({
             method: 'DELETE',
-            endpoint: Utils.constructPath(pathVariable, '/mains_courantes_participants/{participant_id}')
+            endpoint: Utils.constructPath(pathVariable, '/mains_courantes_participants/{participant_id}'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     

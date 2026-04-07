@@ -48,7 +48,11 @@ export { PingAPI } from './api/PingAPI';
 
 export { PrescriptionsAPI } from './api/PrescriptionsAPI';
 
+export { SearchAPI } from './api/SearchAPI';
+
 export { SitesGeographiquesAPI } from './api/SitesGeographiquesAPI';
+
+export { SupportsReglementairesAPI } from './api/SupportsReglementairesAPI';
 
 export { TourneesDECIAPI } from './api/TourneesDECIAPI';
 

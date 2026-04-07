@@ -4,8 +4,9 @@ import { PrescriptionSupportReglementaire } from './PrescriptionSupportReglement
 export type Prescription = {
     'id': string;
     'contenu': string;
-    'type': TypeEnum;
+    'type': TypeEnum | null;
     'supports_reglementaires': Array<PrescriptionSupportReglementaire>;
+    'chemins': Array<string>;
 };
 
 export enum TypeEnum {

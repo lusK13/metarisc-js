@@ -21,7 +21,11 @@ export class EnveloppesAPI extends Core {
         const pathVariable = { 'enveloppe_id': (new String(enveloppeId)).toString() };
         return this.request({
             method: 'DELETE',
-            endpoint: Utils.constructPath(pathVariable, '/enveloppes/{enveloppe_id}')
+            endpoint: Utils.constructPath(pathVariable, '/enveloppes/{enveloppe_id}'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -35,7 +39,11 @@ export class EnveloppesAPI extends Core {
         const pathVariable = { 'enveloppe_id': (new String(enveloppeId)).toString() };
         return this.request({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/enveloppes/{enveloppe_id}')
+            endpoint: Utils.constructPath(pathVariable, '/enveloppes/{enveloppe_id}'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -54,7 +62,11 @@ export class EnveloppesAPI extends Core {
             params: Utils.payloadFilter({
                 'sort': sort === undefined ? undefined : (new String(sort)).toString(), 
                 'titre': titre === undefined ? undefined : (new String(titre)).toString()
-            })
+            }),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -70,6 +82,10 @@ export class EnveloppesAPI extends Core {
         return this.request({
             method: 'PATCH',
             endpoint: Utils.constructPath(pathVariable, '/enveloppes/{enveloppe_id}'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }],
             body: Utils.payloadFilter(params)
         });
     }
@@ -85,6 +101,10 @@ export class EnveloppesAPI extends Core {
         return this.request({
             method: 'POST',
             endpoint: Utils.constructPath(pathVariable, '/enveloppes'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }],
             body: Utils.payloadFilter(params)
         });
     }

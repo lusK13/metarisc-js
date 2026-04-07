@@ -5,7 +5,7 @@ import type { AxiosResponse } from "axios";
 import { Client } from "../client";
 import { Collection } from "../collection";
 import { Prescription } from '../model/Prescription';
-import { PrescriptionSupportReglementaire } from '../model/PrescriptionSupportReglementaire';
+import { PrescriptionExploreResult } from '../model/PrescriptionExploreResult';
 
 export class PrescriptionsAPI extends Core {
     constructor(config: MetariscConfig, client?: Client) {
@@ -22,21 +22,11 @@ export class PrescriptionsAPI extends Core {
         const pathVariable = { 'prescription_id': (new String(prescriptionId)).toString() };
         return this.request({
             method: 'DELETE',
-            endpoint: Utils.constructPath(pathVariable, '/prescriptions/{prescription_id}')
-        });
-    }
-    
-    /**
-     * Suppression d'un support réglementaire.
-     */
-    deleteSupportReglementaire(
-        supportReglementaireId: string
-    ) : Promise<AxiosResponse<void>>
-    {
-        const pathVariable = { 'support_reglementaire_id': (new String(supportReglementaireId)).toString() };
-        return this.request({
-            method: 'DELETE',
-            endpoint: Utils.constructPath(pathVariable, '/supports_reglementaires/{support_reglementaire_id}')
+            endpoint: Utils.constructPath(pathVariable, '/prescriptions/{prescription_id}'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -50,21 +40,39 @@ export class PrescriptionsAPI extends Core {
         const pathVariable = { 'prescription_id': (new String(prescriptionId)).toString() };
         return this.request({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/prescriptions/{prescription_id}')
+            endpoint: Utils.constructPath(pathVariable, '/prescriptions/{prescription_id}'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
     /**
-     * Récupération des détails d'un support réglementaire.
+     * Cette opération permet d'explorer les prescriptions en fonction de leur emplacement dans la structure de répertoires.
+Il est possible de filtrer les prescriptions en fonction de leur contenu ou de références aux supports réglementaires.
+Les résultats retournés peuvent être des prescriptions ou des chemins (répertoires).
+Les résultats sont trié de manière à afficher en premier les répertoires (chemins) puis les prescriptions.
      */
-    getSupportReglementaire(
-        supportReglementaireId: string
-    ) : Promise<AxiosResponse<PrescriptionSupportReglementaire>>
+    paginateExplore(
+        contenu? : string,
+        supportReglementaireReference? : string,
+        chemin? : string
+    ) : Collection<PrescriptionExploreResult>
     {
-        const pathVariable = { 'support_reglementaire_id': (new String(supportReglementaireId)).toString() };
-        return this.request({
+        const pathVariable = { };
+        return this.collect({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/supports_reglementaires/{support_reglementaire_id}')
+            endpoint: Utils.constructPath(pathVariable, '/prescriptions/explore'),
+            params: Utils.payloadFilter({
+                'contenu': contenu === undefined ? undefined : (new String(contenu)).toString(), 
+                'support_reglementaire_reference': supportReglementaireReference === undefined ? undefined : (new String(supportReglementaireReference)).toString(), 
+                'chemin': chemin === undefined ? undefined : (new String(chemin)).toString()
+            }),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -83,26 +91,11 @@ export class PrescriptionsAPI extends Core {
             params: Utils.payloadFilter({
                 'contenu': contenu === undefined ? undefined : (new String(contenu)).toString(), 
                 'support_reglementaire_reference': supportReglementaireReference === undefined ? undefined : (new String(supportReglementaireReference)).toString()
-            })
-        });
-    }
-    
-    /**
-     * Liste des supports réglementaires.
-     */
-    paginateSupportsReglementaires(
-        contenu? : string,
-        reference? : string
-    ) : Collection<PrescriptionSupportReglementaire>
-    {
-        const pathVariable = { };
-        return this.collect({
-            method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/supports_reglementaires'),
-            params: Utils.payloadFilter({
-                'contenu': contenu === undefined ? undefined : (new String(contenu)).toString(), 
-                'reference': reference === undefined ? undefined : (new String(reference)).toString()
-            })
+            }),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -118,6 +111,10 @@ export class PrescriptionsAPI extends Core {
         return this.request({
             method: 'PATCH',
             endpoint: Utils.constructPath(pathVariable, '/prescriptions/{prescription_id}'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }],
             body: Utils.payloadFilter(params)
         });
     }
@@ -133,21 +130,10 @@ export class PrescriptionsAPI extends Core {
         return this.request({
             method: 'POST',
             endpoint: Utils.constructPath(pathVariable, '/prescriptions'),
-            body: Utils.payloadFilter(params)
-        });
-    }
-    
-    /**
-     * Ajouter un support réglementaire.
-     */
-    postSupportReglementaire(
-        params : any
-    ) : Promise<AxiosResponse<PrescriptionSupportReglementaire>>
-    {
-        const pathVariable = { };
-        return this.request({
-            method: 'POST',
-            endpoint: Utils.constructPath(pathVariable, '/supports_reglementaires'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }],
             body: Utils.payloadFilter(params)
         });
     }

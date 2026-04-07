@@ -21,7 +21,11 @@ export class CommissionsMembresAPI extends Core {
         const pathVariable = { 'membre_id': (new String(membreId)).toString() };
         return this.request({
             method: 'DELETE',
-            endpoint: Utils.constructPath(pathVariable, '/commissions_membres/{membre_id}')
+            endpoint: Utils.constructPath(pathVariable, '/commissions_membres/{membre_id}'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -35,7 +39,11 @@ export class CommissionsMembresAPI extends Core {
         const pathVariable = { 'membre_id': (new String(membreId)).toString() };
         return this.request({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/commissions_membres/{membre_id}')
+            endpoint: Utils.constructPath(pathVariable, '/commissions_membres/{membre_id}'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -48,7 +56,11 @@ export class CommissionsMembresAPI extends Core {
         const pathVariable = { };
         return this.collect({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/commissions_membres')
+            endpoint: Utils.constructPath(pathVariable, '/commissions_membres'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -64,6 +76,10 @@ export class CommissionsMembresAPI extends Core {
         return this.request({
             method: 'POST',
             endpoint: Utils.constructPath(pathVariable, '/commissions_membres/{membre_id}'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }],
             body: Utils.payloadFilter(params)
         });
     }

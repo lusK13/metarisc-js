@@ -27,7 +27,11 @@ export class PEIAPI extends Core {
         const pathVariable = { 'pei_id': (new String(peiId)).toString() };
         return this.request({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/pei/{pei_id}')
+            endpoint: Utils.constructPath(pathVariable, '/pei/{pei_id}'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -41,7 +45,11 @@ export class PEIAPI extends Core {
         const pathVariable = { 'pei_id': (new String(peiId)).toString() };
         return this.request({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/pei/{pei_id}/references_exterieures')
+            endpoint: Utils.constructPath(pathVariable, '/pei/{pei_id}/references_exterieures'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -55,7 +63,11 @@ export class PEIAPI extends Core {
         const pathVariable = { 'pei_id': (new String(peiId)).toString() };
         return this.collect({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/pei/{pei_id}/anomalies')
+            endpoint: Utils.constructPath(pathVariable, '/pei/{pei_id}/anomalies'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -69,7 +81,11 @@ export class PEIAPI extends Core {
         const pathVariable = { 'pei_id': (new String(peiId)).toString() };
         return this.collect({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/pei/{pei_id}/contacts')
+            endpoint: Utils.constructPath(pathVariable, '/pei/{pei_id}/contacts'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -83,7 +99,11 @@ export class PEIAPI extends Core {
         const pathVariable = { 'pei_id': (new String(peiId)).toString() };
         return this.collect({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/pei/{pei_id}/documents')
+            endpoint: Utils.constructPath(pathVariable, '/pei/{pei_id}/documents'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -97,7 +117,11 @@ export class PEIAPI extends Core {
         const pathVariable = { 'pei_id': (new String(peiId)).toString() };
         return this.collect({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/pei/{pei_id}/dossiers')
+            endpoint: Utils.constructPath(pathVariable, '/pei/{pei_id}/dossiers'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -111,7 +135,11 @@ export class PEIAPI extends Core {
         const pathVariable = { 'pei_id': (new String(peiId)).toString() };
         return this.collect({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/pei/{pei_id}/historique')
+            endpoint: Utils.constructPath(pathVariable, '/pei/{pei_id}/historique'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -142,7 +170,11 @@ export class PEIAPI extends Core {
                 'domanialite': domanialite === undefined ? undefined : (new String(domanialite)).toString(), 
                 'geojson': geojson === undefined ? undefined : (new String(geojson)).toString(), 
                 'references_exterieures': referencesExterieures === undefined ? undefined : (new String(referencesExterieures)).toString()
-            })
+            }),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -158,6 +190,10 @@ export class PEIAPI extends Core {
         return this.request({
             method: 'PATCH',
             endpoint: Utils.constructPath(pathVariable, '/pei/{pei_id}/references_exterieures'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }],
             body: Utils.payloadFilter(params)
         });
     }
@@ -174,6 +210,10 @@ export class PEIAPI extends Core {
         return this.request({
             method: 'POST',
             endpoint: Utils.constructPath(pathVariable, '/pei/{pei_id}/anomalies'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }],
             body: Utils.payloadFilter(params)
         });
     }
@@ -190,6 +230,10 @@ export class PEIAPI extends Core {
         return this.request({
             method: 'POST',
             endpoint: Utils.constructPath(pathVariable, '/pei/{pei_id}/contacts'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }],
             body: Utils.payloadFilter(params)
         });
     }
@@ -206,6 +250,10 @@ export class PEIAPI extends Core {
         return this.request({
             method: 'POST',
             endpoint: Utils.constructPath(pathVariable, '/pei/{pei_id}/documents'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }],
             body: Utils.payloadFilter(params)
         });
     }
@@ -222,6 +270,28 @@ export class PEIAPI extends Core {
         return this.request({
             method: 'POST',
             endpoint: Utils.constructPath(pathVariable, '/pei/{pei_id}/dossiers'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                if (parsedData && parsedData.createur?.roles) {
+                    parsedData.createur.roles = new Set(parsedData.createur.roles);
+                }
+                if (parsedData && parsedData.modules) {
+                    parsedData.modules = new Set(parsedData.modules);
+                }
+                if (parsedData && parsedData.workflows_actifs) {
+                    parsedData.workflows_actifs = new Set(parsedData.workflows_actifs);
+                }
+                if (parsedData && parsedData.erp.descriptif_technique.analyse_risque?.activites_secondaire) {
+                    parsedData.erp.descriptif_technique.analyse_risque.activites_secondaire = new Set(parsedData.erp.descriptif_technique.analyse_risque.activites_secondaire);
+                }
+                if (parsedData && parsedData.erp.descriptif_technique.analyse_risque?.type_cloisonnement) {
+                    parsedData.erp.descriptif_technique.analyse_risque.type_cloisonnement = new Set(parsedData.erp.descriptif_technique.analyse_risque.type_cloisonnement);
+                }
+                if (parsedData && parsedData.erp.descriptif_technique.analyse_risque?.type_de_chauffage) {
+                    parsedData.erp.descriptif_technique.analyse_risque.type_de_chauffage = new Set(parsedData.erp.descriptif_technique.analyse_risque.type_de_chauffage);
+                }
+                return parsedData;
+            }],
             body: Utils.payloadFilter(params)
         });
     }
@@ -237,6 +307,10 @@ export class PEIAPI extends Core {
         return this.request({
             method: 'POST',
             endpoint: Utils.constructPath(pathVariable, '/pei'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }],
             body: Utils.payloadFilter(params)
         });
     }

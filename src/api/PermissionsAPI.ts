@@ -19,7 +19,11 @@ export class PermissionsAPI extends Core {
         const pathVariable = { };
         return this.request({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/permissions')
+            endpoint: Utils.constructPath(pathVariable, '/permissions'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     

@@ -21,7 +21,11 @@ export class AnomaliesAPI extends Core {
         const pathVariable = { 'anomalie_id': (new String(anomalieId)).toString() };
         return this.request({
             method: 'DELETE',
-            endpoint: Utils.constructPath(pathVariable, '/anomalies/{anomalie_id}')
+            endpoint: Utils.constructPath(pathVariable, '/anomalies/{anomalie_id}'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -35,7 +39,11 @@ export class AnomaliesAPI extends Core {
         const pathVariable = { 'anomalie_id': (new String(anomalieId)).toString() };
         return this.request({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/anomalies/{anomalie_id}')
+            endpoint: Utils.constructPath(pathVariable, '/anomalies/{anomalie_id}'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -56,7 +64,11 @@ export class AnomaliesAPI extends Core {
                 'sort': sort === undefined ? undefined : (new String(sort)).toString(), 
                 'texte': texte === undefined ? undefined : (new String(texte)).toString(), 
                 'code': code === undefined ? undefined : (new String(code)).toString()
-            })
+            }),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -71,6 +83,10 @@ export class AnomaliesAPI extends Core {
         return this.request({
             method: 'POST',
             endpoint: Utils.constructPath(pathVariable, '/anomalies'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }],
             body: Utils.payloadFilter(params)
         });
     }

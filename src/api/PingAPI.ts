@@ -19,7 +19,11 @@ export class PingAPI extends Core {
         const pathVariable = { };
         return this.request({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/ping')
+            endpoint: Utils.constructPath(pathVariable, '/ping'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     

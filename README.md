@@ -24,9 +24,13 @@ Pour effectuer une requête sur Metarisc, il faut tout d'adord initialisé le cl
 
 ```ts
 const m = new Metarisc({
-    metarisc_url: "https://api.metarisc.fr",
-    client_id: "CLIENT_ID",
-    client_secret: "CLIENT_SECRET"
+    metarisc_url: "https://api.metarisc.fr"
+});
+
+await m.authenticate(AuthMethod.CLIENT_CREDENTIALS, {
+    scope: 'openid profile email',
+    client_id: "client_id",
+    client_secret: "client_secret"
 });
 
 m.dossiers.getDossier("123456");

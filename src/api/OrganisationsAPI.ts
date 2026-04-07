@@ -27,7 +27,11 @@ export class OrganisationsAPI extends Core {
         const pathVariable = { 'org_id': (new String(orgId)).toString() };
         return this.request({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/organisations/{org_id}')
+            endpoint: Utils.constructPath(pathVariable, '/organisations/{org_id}'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -41,7 +45,11 @@ export class OrganisationsAPI extends Core {
         const pathVariable = { 'org_id': (new String(orgId)).toString() };
         return this.request({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/organisations/{org_id}/permissions')
+            endpoint: Utils.constructPath(pathVariable, '/organisations/{org_id}/permissions'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -55,7 +63,11 @@ export class OrganisationsAPI extends Core {
         const pathVariable = { 'org_id': (new String(orgId)).toString() };
         return this.request({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/organisations/{org_id}/preferences')
+            endpoint: Utils.constructPath(pathVariable, '/organisations/{org_id}/preferences'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -69,7 +81,17 @@ export class OrganisationsAPI extends Core {
         const pathVariable = { 'org_id': (new String(orgId)).toString() };
         return this.request({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/organisations/{org_id}/regles-deci')
+            endpoint: Utils.constructPath(pathVariable, '/organisations/{org_id}/regles-deci'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                if (parsedData && parsedData.pibi_performance_natures_performance_restreinte) {
+                    parsedData.pibi_performance_natures_performance_restreinte = new Set(parsedData.pibi_performance_natures_performance_restreinte);
+                }
+                if (parsedData && parsedData.pibi_performance_natures_a_reformer) {
+                    parsedData.pibi_performance_natures_a_reformer = new Set(parsedData.pibi_performance_natures_a_reformer);
+                }
+                return parsedData;
+            }]
         });
     }
     
@@ -83,7 +105,11 @@ export class OrganisationsAPI extends Core {
         const pathVariable = { 'org_id': (new String(orgId)).toString() };
         return this.collect({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/organisations/{org_id}/dossiers-workflows-suites')
+            endpoint: Utils.constructPath(pathVariable, '/organisations/{org_id}/dossiers-workflows-suites'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -97,7 +123,11 @@ export class OrganisationsAPI extends Core {
         const pathVariable = { 'org_id': (new String(orgId)).toString() };
         return this.collect({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/organisations/{org_id}/geoservices')
+            endpoint: Utils.constructPath(pathVariable, '/organisations/{org_id}/geoservices'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -115,7 +145,11 @@ export class OrganisationsAPI extends Core {
             endpoint: Utils.constructPath(pathVariable, '/organisations/{org_id}/membres'),
             params: Utils.payloadFilter({
                 'last_name': lastName === undefined ? undefined : (new String(lastName)).toString()
-            })
+            }),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -128,7 +162,11 @@ export class OrganisationsAPI extends Core {
         const pathVariable = { };
         return this.collect({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/organisations')
+            endpoint: Utils.constructPath(pathVariable, '/organisations'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -144,6 +182,10 @@ export class OrganisationsAPI extends Core {
         return this.request({
             method: 'POST',
             endpoint: Utils.constructPath(pathVariable, '/organisations/{org_id}/geoservices'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }],
             body: Utils.payloadFilter(params)
         });
     }
@@ -160,6 +202,13 @@ export class OrganisationsAPI extends Core {
         return this.request({
             method: 'POST',
             endpoint: Utils.constructPath(pathVariable, '/organisations/{org_id}/membres'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                if (parsedData && parsedData.utilisateur?.roles) {
+                    parsedData.utilisateur.roles = new Set(parsedData.utilisateur.roles);
+                }
+                return parsedData;
+            }],
             body: Utils.payloadFilter(params)
         });
     }
@@ -176,6 +225,10 @@ export class OrganisationsAPI extends Core {
         return this.request({
             method: 'POST',
             endpoint: Utils.constructPath(pathVariable, '/organisations/{org_id}/preferences'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }],
             body: Utils.payloadFilter(params)
         });
     }
@@ -192,6 +245,16 @@ export class OrganisationsAPI extends Core {
         return this.request({
             method: 'POST',
             endpoint: Utils.constructPath(pathVariable, '/organisations/{org_id}/regles-deci'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                if (parsedData && parsedData.pibi_performance_natures_performance_restreinte) {
+                    parsedData.pibi_performance_natures_performance_restreinte = new Set(parsedData.pibi_performance_natures_performance_restreinte);
+                }
+                if (parsedData && parsedData.pibi_performance_natures_a_reformer) {
+                    parsedData.pibi_performance_natures_a_reformer = new Set(parsedData.pibi_performance_natures_a_reformer);
+                }
+                return parsedData;
+            }],
             body: Utils.payloadFilter(params)
         });
     }

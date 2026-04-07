@@ -21,7 +21,11 @@ export class SitesGeographiquesAPI extends Core {
         const pathVariable = { 'site_geographique_id': (new String(siteGeographiqueId)).toString() };
         return this.request({
             method: 'DELETE',
-            endpoint: Utils.constructPath(pathVariable, '/sites_geographiques/{site_geographique_id}')
+            endpoint: Utils.constructPath(pathVariable, '/sites_geographiques/{site_geographique_id}'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -35,7 +39,11 @@ export class SitesGeographiquesAPI extends Core {
         const pathVariable = { 'site_geographique_id': (new String(siteGeographiqueId)).toString() };
         return this.request({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/sites_geographiques/{site_geographique_id}')
+            endpoint: Utils.constructPath(pathVariable, '/sites_geographiques/{site_geographique_id}'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -54,7 +62,11 @@ export class SitesGeographiquesAPI extends Core {
             params: Utils.payloadFilter({
                 'sort': sort === undefined ? undefined : (new String(sort)).toString(), 
                 'libelle': libelle === undefined ? undefined : (new String(libelle)).toString()
-            })
+            }),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -70,6 +82,10 @@ export class SitesGeographiquesAPI extends Core {
         return this.request({
             method: 'PATCH',
             endpoint: Utils.constructPath(pathVariable, '/sites_geographiques/{site_geographique_id}'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }],
             body: Utils.payloadFilter(params)
         });
     }
@@ -85,6 +101,10 @@ export class SitesGeographiquesAPI extends Core {
         return this.request({
             method: 'POST',
             endpoint: Utils.constructPath(pathVariable, '/sites_geographiques'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }],
             body: Utils.payloadFilter(params)
         });
     }

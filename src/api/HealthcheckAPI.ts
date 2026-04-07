@@ -18,7 +18,11 @@ export class HealthcheckAPI extends Core {
         const pathVariable = { };
         return this.request({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/healthcheck')
+            endpoint: Utils.constructPath(pathVariable, '/healthcheck'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     

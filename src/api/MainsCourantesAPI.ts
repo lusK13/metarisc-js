@@ -23,7 +23,11 @@ export class MainsCourantesAPI extends Core {
         const pathVariable = { 'main_courante_id': (new String(mainCouranteId)).toString() };
         return this.request({
             method: 'DELETE',
-            endpoint: Utils.constructPath(pathVariable, '/mains_courantes/{main_courante_id}')
+            endpoint: Utils.constructPath(pathVariable, '/mains_courantes/{main_courante_id}'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -37,7 +41,11 @@ export class MainsCourantesAPI extends Core {
         const pathVariable = { 'main_courante_id': (new String(mainCouranteId)).toString() };
         return this.request({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/mains_courantes/{main_courante_id}')
+            endpoint: Utils.constructPath(pathVariable, '/mains_courantes/{main_courante_id}'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -51,7 +59,11 @@ export class MainsCourantesAPI extends Core {
         const pathVariable = { 'main_courante_id': (new String(mainCouranteId)).toString() };
         return this.request({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/mains_courantes/{main_courante_id}/participants')
+            endpoint: Utils.constructPath(pathVariable, '/mains_courantes/{main_courante_id}/participants'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -65,7 +77,11 @@ export class MainsCourantesAPI extends Core {
         const pathVariable = { 'main_courante_id': (new String(mainCouranteId)).toString() };
         return this.collect({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/mains_courantes/{main_courante_id}/documents')
+            endpoint: Utils.constructPath(pathVariable, '/mains_courantes/{main_courante_id}/documents'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -81,6 +97,10 @@ export class MainsCourantesAPI extends Core {
         return this.request({
             method: 'POST',
             endpoint: Utils.constructPath(pathVariable, '/mains_courantes/{main_courante_id}/documents'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }],
             body: Utils.payloadFilter(params)
         });
     }
@@ -97,6 +117,10 @@ export class MainsCourantesAPI extends Core {
         return this.request({
             method: 'POST',
             endpoint: Utils.constructPath(pathVariable, '/mains_courantes/{main_courante_id}'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }],
             body: Utils.payloadFilter(params)
         });
     }
@@ -113,6 +137,13 @@ export class MainsCourantesAPI extends Core {
         return this.request({
             method: 'POST',
             endpoint: Utils.constructPath(pathVariable, '/mains_courantes/{main_courante_id}/participants'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                if (parsedData && parsedData.utilisateur?.roles) {
+                    parsedData.utilisateur.roles = new Set(parsedData.utilisateur.roles);
+                }
+                return parsedData;
+            }],
             body: Utils.payloadFilter(params)
         });
     }

@@ -12,17 +12,18 @@ export type DossierBase = {
     'createur': Utilisateur | null;
     'application_utilisee_nom': string | null;
     'statut': StatutEnum;
-    'modules': Array<ModulesEnum>;
+    'modules': Set<ModulesEnum>;
     'tags': Array<Tag>;
     'est_archive': boolean;
-    'passage_en_commission': PassageCommission | null;
+    'passages_en_commission': Array<PassageCommission> | null;
     'avis': AvisEnum | null;
     'enveloppe': Enveloppe | null;
-    'workflows_actifs': Array<WorkflowsActifsEnum>;
+    'workflows_actifs': Set<WorkflowsActifsEnum>;
     'nb_messages_fil_rouge': number;
     'nb_contacts': number;
     'nb_pieces_jointes': number;
     'affectations': Array<DossierAffectation>;
+    'organisation_id': string;
 };
 
 export enum StatutEnum {
@@ -33,6 +34,7 @@ export enum StatutEnum {
 export enum ModulesEnum {
     ERP_ANALYSE_DE_RISQUE = 'erp:analyse_de_risque',
     ERP_ESSAIS_VISITE = 'erp:essais_visite',
+    ERP_DEROGATIONS = 'erp:derogations',
     DECI_CONTROLE_TECHNIQUE_PEI = 'deci:controle_technique_pei'
 }
 

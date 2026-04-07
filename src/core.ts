@@ -1,21 +1,9 @@
 import { AxiosResponse } from "axios";
-import { AuthMethod, Client, EventEnum } from "./client";
+import { AuthMethod, Client, EventEnum, RequestConfig as BaseRequestConfig } from "./client";
 import { Collection } from "./collection";
 import { GrantResponse, RefreshResponse } from "./auth/oauth2";
 
-interface RequestConfig {
-    body?: any;
-    headers?: { [name: string]: string | string[] };
-    params?: { [param: string]: string | string[] };
-    endpoint?: string;
-    method?: string;
-    responseType?:
-		| "arraybuffer"
-		| "blob"
-		| "document"
-		| "json"
-		| "text"
-		| "stream";
+interface RequestConfig extends BaseRequestConfig {
 }
 
 export interface MetariscConfig {
@@ -60,8 +48,10 @@ export class Core {
 
     collect<T>(config: RequestConfig): Collection<T> {
         return new Collection<T>(this, {
+            method: config.method as 'GET' | 'POST',
             endpoint: config.endpoint || "/",
             params: config.params,
+            data: config.body,
             headers: config.headers
         });
     }

@@ -1,4 +1,5 @@
 // File generated from our OpenAPI spec
+import { Dossier } from './Dossier';
 import { Utilisateur } from './Utilisateur';
 
 export type Notification = {
@@ -10,6 +11,7 @@ export type Notification = {
     'date_creation': Date;
     'date_de_lecture': Date | null;
     'utilisateur': Utilisateur;
+    'subject': Dossier | null;
 };
 
 export enum TypeEnum {

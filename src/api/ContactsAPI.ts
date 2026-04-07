@@ -21,7 +21,11 @@ export class ContactsAPI extends Core {
         const pathVariable = { 'contact_id': (new String(contactId)).toString() };
         return this.request({
             method: 'DELETE',
-            endpoint: Utils.constructPath(pathVariable, '/contacts/{contact_id}')
+            endpoint: Utils.constructPath(pathVariable, '/contacts/{contact_id}'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -35,7 +39,11 @@ export class ContactsAPI extends Core {
         const pathVariable = { 'contact_id': (new String(contactId)).toString() };
         return this.request({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/contacts/{contact_id}')
+            endpoint: Utils.constructPath(pathVariable, '/contacts/{contact_id}'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -48,7 +56,11 @@ export class ContactsAPI extends Core {
         const pathVariable = { };
         return this.collect({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/contacts')
+            endpoint: Utils.constructPath(pathVariable, '/contacts'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -64,6 +76,10 @@ export class ContactsAPI extends Core {
         return this.request({
             method: 'POST',
             endpoint: Utils.constructPath(pathVariable, '/contacts/{contact_id}'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }],
             body: Utils.payloadFilter(params)
         });
     }

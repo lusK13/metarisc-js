@@ -13,7 +13,16 @@ export type PrescriptionSupportReglementaire = {
 export enum NatureEnum {
     ARRETE = 'arrete',
     ARTICLE = 'article',
-    LOCAL = 'local'
+    ARRETES_PREFECTORAUX = 'arretes_prefectoraux',
+    ARTICLES = 'articles',
+    GUIDES = 'guides',
+    LOCAL_AUTRE_TEXTE = 'local_autre_texte',
+    DOCTRINE = 'doctrine',
+    TEXTES_NATIONAUX_AUTRE_TEXTE = 'textes_nationaux_autre_texte',
+    AVIS_CCS = 'avis_ccs',
+    INSTRUCTIONS_TECHNIQUES = 'instructions_techniques',
+    DECRET = 'decret',
+    CIRCULAIRE = 'circulaire'
 }
 
 export enum EtatEnum {

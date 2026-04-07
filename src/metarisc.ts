@@ -15,6 +15,7 @@ export class Metarisc extends Core
     public sites_geographiques: resources.SitesGeographiquesAPI;
     public workflows: resources.WorkflowsAPI;
     public healthcheck: resources.HealthcheckAPI;
+    public search: resources.SearchAPI;
     public enveloppes: resources.EnveloppesAPI;
     public organisations: resources.OrganisationsAPI;
     public pei: resources.PEIAPI;
@@ -27,7 +28,7 @@ export class Metarisc extends Core
     public dossiers_affectations: resources.DossiersAffectationsAPI;
     public mains_courantes: resources.MainsCourantesAPI;
     public anomalies: resources.AnomaliesAPI;
-    public supports_reglementaires: resources.PrescriptionsAPI;
+    public supports_reglementaires: resources.SupportsReglementairesAPI;
     public feed: resources.FeedAPI;
     public tournees_deci: resources.TourneesDECIAPI;
     public controles_pei: resources.ControlesPEIAPI;
@@ -55,6 +56,7 @@ export class Metarisc extends Core
                     case 'sites_geographiques': return new resources.SitesGeographiquesAPI(config, tmpClient);
                     case 'workflows': return new resources.WorkflowsAPI(config, tmpClient);
                     case 'healthcheck': return new resources.HealthcheckAPI(config, tmpClient);
+                    case 'search': return new resources.SearchAPI(config, tmpClient);
                     case 'enveloppes': return new resources.EnveloppesAPI(config, tmpClient);
                     case 'organisations': return new resources.OrganisationsAPI(config, tmpClient);
                     case 'pei': return new resources.PEIAPI(config, tmpClient);
@@ -67,7 +69,7 @@ export class Metarisc extends Core
                     case 'dossiers_affectations': return new resources.DossiersAffectationsAPI(config, tmpClient);
                     case 'mains_courantes': return new resources.MainsCourantesAPI(config, tmpClient);
                     case 'anomalies': return new resources.AnomaliesAPI(config, tmpClient);
-                    case 'supports_reglementaires': return new resources.PrescriptionsAPI(config, tmpClient);
+                    case 'supports_reglementaires': return new resources.SupportsReglementairesAPI(config, tmpClient);
                     case 'feed': return new resources.FeedAPI(config, tmpClient);
                     case 'tournees_deci': return new resources.TourneesDECIAPI(config, tmpClient);
                     case 'controles_pei': return new resources.ControlesPEIAPI(config, tmpClient);

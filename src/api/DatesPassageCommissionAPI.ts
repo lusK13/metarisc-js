@@ -13,6 +13,21 @@ export class DatesPassageCommissionAPI extends Core {
     }
     
     /**
+     * Le compte rendu global est un document représentant la synthèse des avis et des échanges de tous les dossiers à l'ordre du jour d'une commission, en se basant sur le modèle de rapport de l'organisation. La génération du PDF est une opération qui peut être longue, en fonction de la taille et du nombre d'éléments à exporter.
+     */
+    getCompteRenduGlobalPdfDate(
+        dateId: string
+    ) : Promise<AxiosResponse<Blob>>
+    {
+        const pathVariable = { 'date_id': (new String(dateId)).toString() };
+        return this.request({
+            method: 'GET',
+            responseType: 'blob',
+            endpoint: Utils.constructPath(pathVariable, '/dates_passage_commission/{date_id}/compte_rendu_global_pdf')
+        });
+    }
+    
+    /**
      * L'export de la convocation des membres est une opération qui permet de récupérer un fichier PDF contenant la convocation pour une date de passage en commission. Le PDF généré est un document de synthèse qui reprend les informations de la commission, en se basant sur le modèle de rapport de l'organisation. La génération du PDF est une opération qui peut être longue, en fonction de la taille et du nombre d'éléments à exporter.
      */
     getConvocationPdfDate(
@@ -37,7 +52,11 @@ export class DatesPassageCommissionAPI extends Core {
         const pathVariable = { 'date_id': (new String(dateId)).toString() };
         return this.request({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/dates_passage_commission/{date_id}')
+            endpoint: Utils.constructPath(pathVariable, '/dates_passage_commission/{date_id}'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -51,7 +70,11 @@ export class DatesPassageCommissionAPI extends Core {
         const pathVariable = { 'date_id': (new String(dateId)).toString() };
         return this.collect({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/dates_passage_commission/{date_id}/ordre_du_jour')
+            endpoint: Utils.constructPath(pathVariable, '/dates_passage_commission/{date_id}/ordre_du_jour'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -67,6 +90,28 @@ export class DatesPassageCommissionAPI extends Core {
         return this.request({
             method: 'POST',
             endpoint: Utils.constructPath(pathVariable, '/dates_passage_commission/{date_id}/ordre_du_jour'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                if (parsedData && parsedData.dossier.createur?.roles) {
+                    parsedData.dossier.createur.roles = new Set(parsedData.dossier.createur.roles);
+                }
+                if (parsedData && parsedData.dossier.modules) {
+                    parsedData.dossier.modules = new Set(parsedData.dossier.modules);
+                }
+                if (parsedData && parsedData.dossier.workflows_actifs) {
+                    parsedData.dossier.workflows_actifs = new Set(parsedData.dossier.workflows_actifs);
+                }
+                if (parsedData && parsedData.dossier.erp.descriptif_technique.analyse_risque?.activites_secondaire) {
+                    parsedData.dossier.erp.descriptif_technique.analyse_risque.activites_secondaire = new Set(parsedData.dossier.erp.descriptif_technique.analyse_risque.activites_secondaire);
+                }
+                if (parsedData && parsedData.dossier.erp.descriptif_technique.analyse_risque?.type_cloisonnement) {
+                    parsedData.dossier.erp.descriptif_technique.analyse_risque.type_cloisonnement = new Set(parsedData.dossier.erp.descriptif_technique.analyse_risque.type_cloisonnement);
+                }
+                if (parsedData && parsedData.dossier.erp.descriptif_technique.analyse_risque?.type_de_chauffage) {
+                    parsedData.dossier.erp.descriptif_technique.analyse_risque.type_de_chauffage = new Set(parsedData.dossier.erp.descriptif_technique.analyse_risque.type_de_chauffage);
+                }
+                return parsedData;
+            }],
             body: Utils.payloadFilter(params)
         });
     }
@@ -83,6 +128,10 @@ export class DatesPassageCommissionAPI extends Core {
         return this.request({
             method: 'POST',
             endpoint: Utils.constructPath(pathVariable, '/dates_passage_commission/{date_id}/reprogrammer'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }],
             body: Utils.payloadFilter(params)
         });
     }

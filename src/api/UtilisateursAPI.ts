@@ -23,7 +23,14 @@ export class UtilisateursAPI extends Core {
         const pathVariable = { };
         return this.request({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/utilisateurs/@moi')
+            endpoint: Utils.constructPath(pathVariable, '/utilisateurs/@moi'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                if (parsedData && parsedData.roles) {
+                    parsedData.roles = new Set(parsedData.roles);
+                }
+                return parsedData;
+            }]
         });
     }
     
@@ -37,7 +44,11 @@ export class UtilisateursAPI extends Core {
         const pathVariable = { 'utilisateur_id': (new String(utilisateurId)).toString() };
         return this.request({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/utilisateurs/{utilisateur_id}/permissions')
+            endpoint: Utils.constructPath(pathVariable, '/utilisateurs/{utilisateur_id}/permissions'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -51,7 +62,14 @@ export class UtilisateursAPI extends Core {
         const pathVariable = { 'utilisateur_id': (new String(utilisateurId)).toString() };
         return this.request({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/utilisateurs/{utilisateur_id}')
+            endpoint: Utils.constructPath(pathVariable, '/utilisateurs/{utilisateur_id}'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                if (parsedData && parsedData.roles) {
+                    parsedData.roles = new Set(parsedData.roles);
+                }
+                return parsedData;
+            }]
         });
     }
     
@@ -64,7 +82,11 @@ export class UtilisateursAPI extends Core {
         const pathVariable = { };
         return this.collect({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/utilisateurs/@moi/emails')
+            endpoint: Utils.constructPath(pathVariable, '/utilisateurs/@moi/emails'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -78,7 +100,11 @@ export class UtilisateursAPI extends Core {
         const pathVariable = { 'utilisateur_id': (new String(utilisateurId)).toString() };
         return this.collect({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/utilisateurs/{utilisateur_id}/emails')
+            endpoint: Utils.constructPath(pathVariable, '/utilisateurs/{utilisateur_id}/emails'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -92,7 +118,11 @@ export class UtilisateursAPI extends Core {
         const pathVariable = { 'utilisateur_id': (new String(utilisateurId)).toString() };
         return this.collect({
             method: 'GET',
-            endpoint: Utils.constructPath(pathVariable, '/utilisateurs/{utilisateur_id}/organisations')
+            endpoint: Utils.constructPath(pathVariable, '/utilisateurs/{utilisateur_id}/organisations'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -111,7 +141,11 @@ export class UtilisateursAPI extends Core {
             params: Utils.payloadFilter({
                 'last_name': lastName === undefined ? undefined : (new String(lastName)).toString(), 
                 'email': email === undefined ? undefined : (new String(email)).toString()
-            })
+            }),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                return parsedData;
+            }]
         });
     }
     
@@ -126,6 +160,36 @@ export class UtilisateursAPI extends Core {
         return this.request({
             method: 'PATCH',
             endpoint: Utils.constructPath(pathVariable, '/utilisateurs/@moi'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                if (parsedData && parsedData.roles) {
+                    parsedData.roles = new Set(parsedData.roles);
+                }
+                return parsedData;
+            }],
+            body: Utils.payloadFilter(params)
+        });
+    }
+    
+    /**
+     * Mise à jour de l'utilisateur.
+     */
+    patchUtilisateur(
+        utilisateurId: string,
+        params : any
+    ) : Promise<AxiosResponse<Utilisateur>>
+    {
+        const pathVariable = { 'utilisateur_id': (new String(utilisateurId)).toString() };
+        return this.request({
+            method: 'PATCH',
+            endpoint: Utils.constructPath(pathVariable, '/utilisateurs/{utilisateur_id}'),
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data);
+                if (parsedData && parsedData.roles) {
+                    parsedData.roles = new Set(parsedData.roles);
+                }
+                return parsedData;
+            }],
             body: Utils.payloadFilter(params)
         });
     }
